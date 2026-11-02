@@ -1,11 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Biblioteca do Bairro</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <!-- Folha de Estilos CSS -->
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    
+
+    <header class="cabecalho">
+        <h1>Biblioteca do Bairro</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="catalogo.html">Catálogo</a></li>
+                <li><a href="eventos.html">Eventos</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+                <li><a href="contactos.html">Contactos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="aviso">
+            <p>Feira do Livre · 13 a 15 de novembro</p>
+        </section>
+
+        <section>
+            <h2>Destaque do Mês</h2>
+            <article class="cartao destaque">
+                <h3>O Principezinho</h3>
+                <p>Antoine de Saint-Exupéry</p>
+                <a href="#" class="botao">Inscrever-me</a>
+            </article>
+        </section>
+
+        <section class="catalogo">
+            <article class="cartao">
+                <h3>Ensaio sobre a Cegueira</h3>
+                <p>José Saramago</p>
+            </article>
+            <article class="cartao">
+                <h3>Os Maias</h3>
+                <p>Eça de Queirós</p>
+            </article>
+            <article class="cartao">
+                <h3>Mensagem</h3>
+                <p>Fernando Pessoa</p>
+            </article>
+        </section>
+    </main>
+
+    <aside>
+        <h3>Horário</h3>
+        <p>Segunda a Sexta: 09h00 - 19h00</p>
+        <p>Sábado: 10h00 - 13h00</p>
+    </aside>
+
+    <footer class="rodape">
+        <div>
+            <p><strong>Morada:</strong> Rua das Flores, 12</p>
+        </div>
+        <div>
+            <p><strong>Horário:</strong> Aberto todos os dias úteis</p>
+        </div>
+        <div>
+            <p><strong>Contactos:</strong> geral@biblioteca.pt</p>
+        </div>
+    </footer>
+
 </body>
 </html>
