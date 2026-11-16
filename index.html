@@ -12,6 +12,113 @@
     <!-- Folha de Estilos CSS -->
     <link rel="stylesheet" href="style.css">
     <script src="src.js" defer></script>
+
+    <!-- ===== Estilos do catálogo dinâmico (exercícios 06 a 09) ===== -->
+    <style>
+        #catalogo-dinamico {
+            --cartao: #ffffff;
+            --borda: #e3ddd0;
+            max-width: 46rem;
+            margin: 2rem auto 0;
+        }
+
+        [data-tema="escuro"] #catalogo-dinamico {
+            --cartao: #22354f;
+            --borda: #35506f;
+        }
+
+        #resumo {
+            margin: 0 0 1rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--cor-principal);
+        }
+
+        .barra-catalogo {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        #pesquisa-catalogo,
+        .barra-catalogo button,
+        #inscricao input,
+        #inscricao button,
+        #lista-livros button {
+            font: inherit;
+            font-size: .95rem;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            padding: .5rem .75rem;
+            background: var(--cartao);
+            color: var(--cor-texto);
+        }
+
+        #pesquisa-catalogo { flex: 1 1 14rem; }
+
+        .barra-catalogo button,
+        #lista-livros button,
+        #inscricao button { cursor: pointer; }
+
+        .barra-catalogo button:hover,
+        #lista-livros button:hover { border-color: var(--cor-principal); }
+
+        .barra-catalogo button.ativo {
+            background: var(--cor-principal);
+            color: var(--cor-fundo);
+            border-color: var(--cor-principal);
+        }
+
+        #lista-livros button:disabled { opacity: .45; cursor: not-allowed; }
+
+        #lista-livros {
+            list-style: none;
+            margin: 0 0 2rem;
+            padding: 0;
+            display: grid;
+            gap: .5rem;
+        }
+
+        #lista-livros li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            flex-wrap: wrap;
+            background: var(--cartao);
+            border: 1px solid var(--borda);
+            border-radius: var(--raio, 12px);
+            padding: .6rem .8rem;
+        }
+
+        #lista-livros li .titulo { flex: 1 1 16rem; min-width: 0; }
+
+        #lista-livros li.indisponivel .titulo {
+            opacity: .55;
+            text-decoration: line-through;
+        }
+
+        #lista-livros li.indisponivel em {
+            font-style: normal;
+            font-size: .8rem;
+            color: var(--cor-destaque);
+        }
+
+        #lista-livros li.vazio,
+        #lista-livros li.erro {
+            justify-content: center;
+            color: var(--cor-destaque);
+        }
+
+        .acoes { display: flex; gap: .4rem; }
+        #lista-livros .favorito.ativo { border-color: var(--cor-principal); font-weight: 700; }
+
+        #inscricao { display: grid; gap: .6rem; max-width: 22rem; }
+        #mensagem { min-height: 1.4rem; font-size: .9rem; margin: 0; }
+        #mensagem.erro { color: var(--cor-destaque); }
+        #mensagem.sucesso { color: var(--cor-principal); font-weight: 600; }
+    </style>
 </head>
 <body>
 
@@ -20,7 +127,7 @@
         <nav>
             <ul>
                 <li><a href="index.html">Início</a></li>
-                <li><a href="catalogo.html">Catálogo</a></li>
+                <li><a href="#catalogo-dinamico">Catálogo</a></li>
                 <li><a href="eventos.html">Eventos</a></li>
                 <li><a href="sobre.html">Sobre</a></li>
                 <li><a href="contactos.html">Contactos</a></li>
@@ -56,6 +163,29 @@
                 <p>Fernando Pessoa</p>
             </article>
         </section>
+
+        <!-- ===== Catálogo dinâmico · exercícios 06 a 09 ===== -->
+        <section id="catalogo-dinamico">
+            <h2 id="resumo">A carregar catálogo…</h2>
+
+            <div class="barra-catalogo">
+                <input id="pesquisa-catalogo" type="search"
+                       placeholder="Pesquisar por título ou autor…"
+                       aria-label="Pesquisar no catálogo">
+                <button id="so-disponiveis" type="button" aria-pressed="false">Só disponíveis</button>
+                <button id="tema" type="button" aria-pressed="false">🌙 Modo escuro</button>
+            </div>
+
+            <ul id="lista-livros"></ul>
+
+            <form id="inscricao" novalidate>
+                <h2>Clube de leitura</h2>
+                <input name="nome" type="text" placeholder="Nome" aria-label="Nome">
+                <input name="email" type="email" placeholder="E-mail" aria-label="E-mail">
+                <button type="submit">Inscrever-me</button>
+                <p id="mensagem" role="status" aria-live="polite"></p>
+            </form>
+        </section>
     </main>
 
     <aside>
@@ -75,6 +205,271 @@
             <p><strong>Contactos:</strong> geral@biblioteca.pt</p>
         </div>
     </footer>
+
+    <!-- ==========================================================================
+         JavaScript do Zero — Exercícios 06 a 09 (catálogo, DOM, eventos, storage)
+         ========================================================================== -->
+    <script>
+        // O catálogo começa vazio: os dados vêm do livros.json (exercício 09).
+        let catalogo = [];
+
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 06 — O catálogo em objetos
+        // ---------------------------------------------------------------------
+
+        // 02 — «Título — Autor (ano)» para cada livro (na consola)
+        function mostrarCatalogo(lista = catalogo) {
+            console.log("\n--- Catálogo (consola) ---");
+            for (const { titulo, autor, ano } of lista) {
+                console.log(`«${titulo} — ${autor} (${ano})»`);
+            }
+        }
+
+        // 03 — quantos estão disponíveis (contado a partir do array)
+        function contarDisponiveis(lista = catalogo) {
+            return lista.filter((livro) => livro.disponivel).length;
+        }
+
+        // 04 — o livro mais antigo
+        function livroMaisAntigo(lista = catalogo) {
+            return lista.reduce((maisAntigo, livro) =>
+                livro.ano < maisAntigo.ano ? livro : maisAntigo
+            );
+        }
+
+        // 05 — emprestar(titulo): marca como emprestado, ou avisa se não puder
+        function emprestar(titulo) {
+            const livro = catalogo.find(
+                (l) => normalizar(l.titulo) === normalizar(titulo)
+            );
+
+            if (!livro) {                       // não existe: avisa, sem erro
+                console.warn(`⚠ Aviso: «${titulo}» não existe no catálogo.`);
+                return false;
+            }
+            if (!livro.disponivel) {            // já emprestado: avisa
+                console.warn(`⚠ Aviso: «${livro.titulo}» já está emprestado.`);
+                return false;
+            }
+
+            livro.disponivel = false;
+            console.log(`✓ «${livro.titulo}» emprestado.`);
+            return true;
+        }
+
+        // ---------------------------------------------------------------------
+        // Elementos da página (exercício 07)
+        // ---------------------------------------------------------------------
+        const lista = document.querySelector("#lista-livros");
+        const resumo = document.querySelector("#resumo");
+        const pesquisa = document.querySelector("#pesquisa-catalogo");
+        const botaoDisponiveis = document.querySelector("#so-disponiveis");
+        const botaoTema = document.querySelector("#tema");
+        const form = document.querySelector("#inscricao");
+        const mensagem = document.querySelector("#mensagem");
+
+        let soDisponiveis = false;
+
+        // Tirar acentos e maiúsculas: pesquisa tolerante
+        function normalizar(texto) {
+            return String(texto)
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
+        }
+
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 07 — O catálogo na página
+        // ---------------------------------------------------------------------
+        function livrosFiltrados() {
+            const termo = normalizar(pesquisa ? pesquisa.value : "");
+
+            return catalogo.filter((livro) => {
+                const corresponde = normalizar(`${livro.titulo} ${livro.autor}`).includes(termo);
+                const passaFiltro = !soDisponiveis || livro.disponivel;
+                return corresponde && passaFiltro;
+            });
+        }
+
+        function mostrarLivros(livros = livrosFiltrados()) {
+            if (!lista) return;
+
+            lista.replaceChildren();            // limpa sem innerHTML
+
+            if (livros.length === 0) {
+                const vazio = document.createElement("li");
+                vazio.className = "vazio";
+                vazio.textContent = "Nenhum livro encontrado";
+                lista.append(vazio);
+            }
+
+            for (const livro of livros) {
+                lista.append(criarItem(livro));
+            }
+
+            // 05 — resumo calculado, nunca escrito à mão
+            if (resumo) {
+                resumo.textContent = `${catalogo.length} livros, ${contarDisponiveis()} disponíveis`;
+            }
+        }
+
+        function criarItem(livro) {
+            const item = document.createElement("li");
+
+            const titulo = document.createElement("span");
+            titulo.className = "titulo";
+            titulo.textContent = `«${livro.titulo} — ${livro.autor} (${livro.ano})»`;
+
+            if (!livro.disponivel) {            // 04 — classe + palavra «emprestado»
+                item.classList.add("indisponivel");
+                const etiqueta = document.createElement("em");
+                etiqueta.textContent = " — emprestado";
+                titulo.append(etiqueta);
+            }
+
+            const acoes = document.createElement("div");
+            acoes.className = "acoes";
+
+            const emprestarBotao = document.createElement("button");
+            emprestarBotao.type = "button";
+            emprestarBotao.textContent = "Emprestar";
+            emprestarBotao.disabled = !livro.disponivel;
+            emprestarBotao.addEventListener("click", () => {
+                emprestar(livro.titulo);
+                mostrarLivros();
+            });
+
+            const guardar = document.createElement("button");
+            guardar.type = "button";
+            guardar.className = "favorito";
+            const guardado = favoritos.includes(livro.titulo);
+            guardar.textContent = guardado ? "★ Guardado" : "☆ Guardar";
+            guardar.setAttribute("aria-pressed", String(guardado));
+            if (guardado) guardar.classList.add("ativo");
+            guardar.addEventListener("click", () => alternarFavorito(livro.titulo));
+
+            acoes.append(emprestarBotao, guardar);
+            item.append(titulo, acoes);
+            return item;
+        }
+
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 08 — Pesquisar e inscrever
+        // ---------------------------------------------------------------------
+        pesquisa?.addEventListener("input", () => mostrarLivros());
+
+        botaoDisponiveis?.addEventListener("click", () => {
+            soDisponiveis = !soDisponiveis;
+            botaoDisponiveis.classList.toggle("ativo", soDisponiveis);
+            botaoDisponiveis.setAttribute("aria-pressed", String(soDisponiveis));
+            mostrarLivros();
+        });
+
+        form?.addEventListener("submit", (evento) => {
+            evento.preventDefault();            // não recarregar a página
+
+            const nome = form.nome.value.trim();
+            const email = form.email.value.trim();
+            const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+            if (nome === "" || !emailValido) {
+                mostrarMensagem("Preencha o nome e um e-mail válido.", "erro");
+                return;
+            }
+
+            mostrarMensagem(`Obrigado, ${nome}! Inscrição feita com o e-mail ${email}.`, "sucesso");
+            form.reset();
+        });
+
+        function mostrarMensagem(texto, tipo) {
+            if (!mensagem) return;
+            mensagem.textContent = texto;
+            mensagem.className = tipo;
+        }
+
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 09 — Lembrar e carregar
+        // ---------------------------------------------------------------------
+        const CHAVE_TEMA = "biblioteca-tema";
+        const CHAVE_FAVORITOS = "biblioteca-favoritos";
+
+        function lerGuardado(chave, porOmissao) {
+            try {
+                const texto = localStorage.getItem(chave);
+                return texto === null ? porOmissao : JSON.parse(texto);
+            } catch {
+                return porOmissao;
+            }
+        }
+
+        function guardar(chave, valor) {
+            try {
+                localStorage.setItem(chave, JSON.stringify(valor));
+            } catch {
+                console.warn("Não foi possível guardar no localStorage.");
+            }
+        }
+
+        let favoritos = lerGuardado(CHAVE_FAVORITOS, []);
+
+        function alternarFavorito(titulo) {
+            favoritos = favoritos.includes(titulo)
+                ? favoritos.filter((t) => t !== titulo)     // tirar dos favoritos
+                : [...favoritos, titulo];                    // acrescentar
+
+            guardar(CHAVE_FAVORITOS, favoritos);
+            mostrarLivros();
+        }
+
+        // Modo escuro: usa o [data-tema="escuro"] que o style.css do site já define
+        function aplicarTema(tema) {
+            const escuro = tema === "escuro";
+            document.documentElement.dataset.tema = escuro ? "escuro" : "claro";
+            if (botaoTema) {
+                botaoTema.textContent = escuro ? "☀ Modo claro" : "🌙 Modo escuro";
+                botaoTema.setAttribute("aria-pressed", String(escuro));
+            }
+        }
+
+        botaoTema?.addEventListener("click", () => {
+            const escuroAgora = document.documentElement.dataset.tema === "escuro";
+            const novo = escuroAgora ? "claro" : "escuro";
+            guardar(CHAVE_TEMA, novo);
+            aplicarTema(novo);
+        });
+
+        aplicarTema(lerGuardado(CHAVE_TEMA, "claro"));
+
+        // Carregar o catálogo do livros.json (fetch com try/catch)
+        async function carregarLivros() {
+            try {
+                const resposta = await fetch("livros.json");
+                if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+
+                catalogo = await resposta.json();
+
+                mostrarCatalogo();                       // exercício 06 na consola
+                console.log(`Livros disponíveis: ${contarDisponiveis()}`);
+                const antigo = livroMaisAntigo();
+                if (antigo) console.log(`Livro mais antigo: «${antigo.titulo}» (${antigo.ano})`);
+
+                mostrarLivros();
+            } catch (erro) {
+                console.error("Não foi possível carregar livros.json:", erro);
+                if (resumo) resumo.textContent = "Catálogo indisponível";
+                if (lista) {
+                    lista.replaceChildren();
+                    const aviso = document.createElement("li");
+                    aviso.className = "erro";
+                    aviso.textContent = "Não foi possível carregar o catálogo (livros.json).";
+                    lista.append(aviso);
+                }
+            }
+        }
+
+        carregarLivros();
+    </script>
 
 </body>
 </html>
