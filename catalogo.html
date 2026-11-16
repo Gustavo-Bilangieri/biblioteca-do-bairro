@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo · Biblioteca do Bairro</title>
+    <script src="app.js" defer></script>
+    <style>
+        :root {
+            --fundo: #fbf8f1;
+            --texto: #2b2b2b;
+            --cartao: #ffffff;
+            --borda: #e3ddd0;
+            --acento: #1f6f4a;
+            --aviso: #b23c17;
+        }
+
+        body.escuro {
+            --fundo: #14171a;
+            --texto: #e8e6e1;
+            --cartao: #1d2226;
+            --borda: #2f363b;
+            --acento: #6cc79a;
+            --aviso: #ff8a65;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 2rem 1.25rem 3rem;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            transition: background .25s ease, color .25s ease;
+        }
+
+        header, main, footer { max-width: 46rem; margin: 0 auto; }
+
+        h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+        h2 { font-size: 1.05rem; font-weight: 600; margin: .25rem 0 1.25rem; color: var(--acento); }
+
+        .barra {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        input, button {
+            font: inherit;
+            border: 1px solid var(--borda);
+            border-radius: .5rem;
+            padding: .55rem .8rem;
+            background: var(--cartao);
+            color: var(--texto);
+        }
+
+        input { flex: 1 1 14rem; }
+
+        button { cursor: pointer; }
+        button:hover { border-color: var(--acento); }
+        button.ativo { background: var(--acento); color: #fff; border-color: var(--acento); }
+        button:disabled { opacity: .45; cursor: not-allowed; }
+
+        ul { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; gap: .5rem; }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            flex-wrap: wrap;
+            background: var(--cartao);
+            border: 1px solid var(--borda);
+            border-radius: .6rem;
+            padding: .6rem .8rem;
+        }
+
+        li.indisponivel .titulo { opacity: .5; text-decoration: line-through; }
+        li.indisponivel em { font-style: normal; font-size: .8rem; color: var(--aviso); }
+        li.vazio, li.erro { justify-content: center; color: var(--aviso); }
+
+        .acoes { display: flex; gap: .4rem; }
+        .favorito.ativo { border-color: var(--acento); }
+
+        form { display: grid; gap: .6rem; max-width: 22rem; }
+        form h2 { margin-bottom: .25rem; }
+        #mensagem { min-height: 1.4rem; font-size: .9rem; }
+        #mensagem.erro { color: var(--aviso); }
+        #mensagem.sucesso { color: var(--acento); }
+
+        footer { margin-top: 2rem; font-size: .85rem; opacity: .7; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Biblioteca do Bairro</h1>
+        <h2 id="resumo">A carregar catálogo…</h2>
+    </header>
+
+    <main>
+        <div class="barra">
+            <input id="pesquisa" type="search" placeholder="Pesquisar por título ou autor…"
+                   aria-label="Pesquisar no catálogo">
+            <button id="so-disponiveis" type="button" aria-pressed="false">Só disponíveis</button>
+            <button id="tema" type="button" aria-pressed="false">🌙 Modo escuro</button>
+        </div>
+
+        <ul id="lista-livros"></ul>
+
+        <form id="inscricao" novalidate>
+            <h2>Clube de leitura</h2>
+            <input name="nome" type="text" placeholder="Nome" aria-label="Nome">
+            <input name="email" type="email" placeholder="E-mail" aria-label="E-mail">
+            <button type="submit">Inscrever-me</button>
+            <p id="mensagem" role="status" aria-live="polite"></p>
+        </form>
+    </main>
+
+    <footer>
+        <p>Exercícios 06 a 09 · JavaScript do Zero</p>
+    </footer>
+
+</body>
+</html>

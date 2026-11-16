@@ -1,0 +1,8 @@
+[
+  { "titulo": "Os Maias", "autor": "Eça de Queirós", "ano": 1888, "disponivel": true },
+  { "titulo": "O Senhor dos Anéis", "autor": "J. R. R. Tolkien", "ano": 1954, "disponivel": true },
+  { "titulo": "O Pequeno Príncipe", "autor": "Antoine de Saint-Exupéry", "ano": 1943, "disponivel": true },
+  { "titulo": "A Revolução dos Bichos", "autor": "George Orwell", "ano": 1945, "disponivel": false },
+  { "titulo": "Memorial do Convento", "autor": "José Saramago", "ano": 1982, "disponivel": true },
+  { "titulo": "Capitães da Areia", "autor": "Jorge Amado", "ano": 1937, "disponivel": true }
+]
