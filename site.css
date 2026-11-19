@@ -755,47 +755,6 @@ section {
 
 .accao-dados { display: flex; gap: .5rem; flex-wrap: wrap; }
 
-/* ===================== Apontamentos ===================== */
-.apontamentos { display: grid; gap: .6rem; }
-
-details.nota {
-    background: var(--cartao);
-    border: 1px solid var(--linha);
-    border-radius: var(--raio);
-    padding: 0;
-    overflow: hidden;
-}
-
-details.nota summary {
-    cursor: pointer;
-    padding: .9rem 1.2rem;
-    font-size: .95rem;
-    font-weight: 600;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-    transition: background var(--transicao);
-}
-
-details.nota summary::-webkit-details-marker { display: none; }
-details.nota summary:hover { background: var(--papel-2); }
-details.nota summary::after { content: "+"; font-size: 1.1rem; color: var(--tinta-suave); }
-details.nota[open] summary::after { content: "−"; }
-
-details.nota .conteudo { padding: 0 1.2rem 1.1rem; font-size: .9rem; color: var(--tinta-suave); }
-details.nota .conteudo p { max-width: 70ch; }
-
-details.nota pre {
-    background: var(--papel-2);
-    padding: .9rem 1rem;
-    border-radius: var(--raio-sm);
-    overflow-x: auto;
-    color: var(--tinta);
-    line-height: 1.5;
-}
-
 /* ===================== Rodapé ===================== */
 .rodape {
     position: relative;

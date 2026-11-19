@@ -27,7 +27,6 @@
             <a href="#catalogo">Catálogo</a>
             <a href="#conta">A minha conta</a>
             <a href="#dados">Os meus dados</a>
-            <a href="#apontamentos">Apontamentos</a>
         </nav>
 
         <div class="tema" role="group" aria-label="Tema">
@@ -192,82 +191,6 @@
                     <button class="botao" type="button" id="abrir-dados">Ver os meus dados</button>
                     <button class="botao botao--fantasma" type="button" id="exportar">Exportar JSON</button>
                 </div>
-            </div>
-        </section>
-
-        <!-- ================= Apontamentos ================= -->
-        <section id="apontamentos" class="revelar">
-            <div class="cabecalho-seccao">
-                <div>
-                    <span class="etiqueta-seccao">Apontamentos</span>
-                    <h2>O que ficou por trás do código</h2>
-                </div>
-            </div>
-
-            <div class="apontamentos">
-                <details class="nota">
-                    <summary>06 · Os quatro erros do código original</summary>
-                    <div class="conteudo">
-                        <ol>
-                            <li><code>getItem("leitura")</code> devolve <strong>texto</strong>, não um array — falta <code>JSON.parse</code>.</li>
-                            <li><code>setItem("leitura", lista)</code> grava <code>[object Object]</code> — falta <code>JSON.stringify</code>.</li>
-                            <li><code>if (tema == true)</code> nunca é verdadeiro: o que está guardado é o texto <code>"escuro"</code>.</li>
-                            <li><code>dados.nome</code> rebenta na primeira visita, porque <code>JSON.parse(null)</code> dá <code>null</code>.</li>
-                        </ol>
-                        <pre>const lista = ler("biblioteca:leitura", []);        // 1
-lista.push("Os Lusíadas");
-guardar("biblioteca:leitura", lista);                // 2
-
-const tema = localStorage.getItem("biblioteca:tema");
-if (tema === "escuro") document.body.classList.add("escuro");   // 3
-
-const dados = ler("biblioteca:leitor", null);        // 4
-saudacao.textContent = `Olá, ${dados?.nome ?? "visitante"}`;</pre>
-                    </div>
-                </details>
-
-                <details class="nota">
-                    <summary>01 · Espreitar o armazenamento</summary>
-                    <div class="conteudo">
-                        <p>No separador <strong>Aplicação</strong> das DevTools aparecem as chaves desta origem — agora são
-                        <code>biblioteca:tema</code>, <code>biblioteca:leitura</code>, <code>biblioteca:visitas</code> e as restantes.
-                        <code>localStorage.length</code> diz quantas são e cada site só vê as suas. Os cookies ficam na mesma secção.</p>
-                    </div>
-                </details>
-
-                <details class="nota">
-                    <summary>02 · Onde guardar cada coisa</summary>
-                    <div class="conteudo">
-                        <p><strong>Tema escuro</strong> → localStorage (preferência pequena, permanente).
-                        <strong>Sessão de login</strong> → cookie HttpOnly (o servidor precisa dela, o JavaScript não a deve ler).
-                        <strong>Passo de um formulário</strong> → sessionStorage (só neste separador).
-                        <strong>Mil capas offline</strong> → IndexedDB (ficheiros e muito espaço).
-                        <strong>Reservas</strong> → servidor (são partilhadas por todos).</p>
-                    </div>
-                </details>
-
-                <details class="nota">
-                    <summary>04 · Prever o resultado</summary>
-                    <div class="conteudo">
-                        <pre>localStorage.getItem("n")              // "20"  (o valor é substituído e vem sempre texto)
-localStorage.getItem("n") + 5          // "205" (concatena, não soma)
-Boolean(localStorage.getItem("ativo")) // true  (o texto "false" é verdadeiro)
-localStorage.getItem("Ativo")          // null  (as chaves distinguem maiúsculas)
-localStorage.length                    // 2     ("n" e "ativo")</pre>
-                    </div>
-                </details>
-
-                <details class="nota">
-                    <summary>12 · Auditoria de privacidade</summary>
-                    <div class="conteudo">
-                        <p><strong>tema</strong> → aceitável, preferência inofensiva.
-                        <strong>token</strong> → a evitar: qualquer script o lê, um XSS leva-o; usar cookie HttpOnly.
-                        <strong>leitor com NIF</strong> → arriscado: guardar só o nome, o resto no servidor.
-                        <strong>desconto</strong> → a evitar: o utilizador edita o valor, quem decide é o servidor.
-                        <strong>passo</strong> em sessionStorage → aceitável, é temporário.
-                        <strong>palavraPasse</strong> → nunca.</p>
-                    </div>
-                </details>
             </div>
         </section>
     </main>
