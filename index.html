@@ -1,475 +1,314 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fbf7ef">
+    <meta name="description" content="Biblioteca do Bairro — catálogo de livros, lista de leitura e preferências guardadas no browser.">
     <title>Biblioteca do Bairro</title>
-    <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-    <!-- Folha de Estilos CSS -->
-    <link rel="stylesheet" href="style.css">
-    <script src="src.js" defer></script>
-
-    <!-- ===== Estilos do catálogo dinâmico (exercícios 06 a 09) ===== -->
-    <style>
-        #catalogo-dinamico {
-            --cartao: #ffffff;
-            --borda: #e3ddd0;
-            max-width: 46rem;
-            margin: 2rem auto 0;
-        }
-
-        [data-tema="escuro"] #catalogo-dinamico {
-            --cartao: #22354f;
-            --borda: #35506f;
-        }
-
-        #resumo {
-            margin: 0 0 1rem;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--cor-principal);
-        }
-
-        .barra-catalogo {
-            display: flex;
-            gap: .5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-
-        #pesquisa-catalogo,
-        .barra-catalogo button,
-        #inscricao input,
-        #inscricao button,
-        #lista-livros button {
-            font: inherit;
-            font-size: .95rem;
-            border: 1px solid var(--borda);
-            border-radius: 8px;
-            padding: .5rem .75rem;
-            background: var(--cartao);
-            color: var(--cor-texto);
-        }
-
-        #pesquisa-catalogo { flex: 1 1 14rem; }
-
-        .barra-catalogo button,
-        #lista-livros button,
-        #inscricao button { cursor: pointer; }
-
-        .barra-catalogo button:hover,
-        #lista-livros button:hover { border-color: var(--cor-principal); }
-
-        .barra-catalogo button.ativo {
-            background: var(--cor-principal);
-            color: var(--cor-fundo);
-            border-color: var(--cor-principal);
-        }
-
-        #lista-livros button:disabled { opacity: .45; cursor: not-allowed; }
-
-        #lista-livros {
-            list-style: none;
-            margin: 0 0 2rem;
-            padding: 0;
-            display: grid;
-            gap: .5rem;
-        }
-
-        #lista-livros li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: .75rem;
-            flex-wrap: wrap;
-            background: var(--cartao);
-            border: 1px solid var(--borda);
-            border-radius: var(--raio, 12px);
-            padding: .6rem .8rem;
-        }
-
-        #lista-livros li .titulo { flex: 1 1 16rem; min-width: 0; }
-
-        #lista-livros li.indisponivel .titulo {
-            opacity: .55;
-            text-decoration: line-through;
-        }
-
-        #lista-livros li.indisponivel em {
-            font-style: normal;
-            font-size: .8rem;
-            color: var(--cor-destaque);
-        }
-
-        #lista-livros li.vazio,
-        #lista-livros li.erro {
-            justify-content: center;
-            color: var(--cor-destaque);
-        }
-
-        .acoes { display: flex; gap: .4rem; }
-        #lista-livros .favorito.ativo { border-color: var(--cor-principal); font-weight: 700; }
-
-        #inscricao { display: grid; gap: .6rem; max-width: 22rem; }
-        #mensagem { min-height: 1.4rem; font-size: .9rem; margin: 0; }
-        #mensagem.erro { color: var(--cor-destaque); }
-        #mensagem.sucesso { color: var(--cor-principal); font-weight: 600; }
-    </style>
+    <link rel="stylesheet" href="site.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
 
+    <div class="progresso-leitura"></div>
+
+    <!-- ================= Cabeçalho ================= -->
     <header class="cabecalho">
-        <h1>Biblioteca do Bairro</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Início</a></li>
-                <li><a href="#catalogo-dinamico">Catálogo</a></li>
-                <li><a href="eventos.html">Eventos</a></li>
-                <li><a href="sobre.html">Sobre</a></li>
-                <li><a href="contactos.html">Contactos</a></li>
-            </ul>
+        <a class="marca" href="#topo">
+            <span class="selo">BB</span>
+            <span class="nome-marca">Biblioteca do Bairro</span>
+        </a>
+
+        <nav class="nav-principal" aria-label="Principal">
+            <a href="#catalogo">Catálogo</a>
+            <a href="#conta">A minha conta</a>
+            <a href="#dados">Os meus dados</a>
+            <a href="#apontamentos">Apontamentos</a>
         </nav>
+
+        <div class="tema" role="group" aria-label="Tema">
+            <button type="button" data-modo="claro" aria-pressed="false" title="Tema claro">☀</button>
+            <button type="button" data-modo="escuro" aria-pressed="false" title="Tema escuro">🌙</button>
+            <button type="button" data-modo="sistema" aria-pressed="true" title="Seguir o sistema">🖥</button>
+        </div>
     </header>
 
-    <main>
-        <section class="aviso">
-            <p>Feira do Livre · 10 a 15 de novembro</p>
-        </section>
+    <!-- ================= Aviso da visita (sessionStorage) ================= -->
+    <div id="faixa-aviso" class="faixa" hidden>
+        <span>Hoje a biblioteca fecha às 13h00.</span>
+        <button id="fechar-aviso" type="button">Dispensar</button>
+    </div>
 
-        <section>
-            <h2>Destaque do Mês</h2>
-            <article class="cartao destaque">
-                <h3>O Principezinho</h3>
-                <p>Antoine de Saint-Exupéry</p>
-                <a href="#" class="botao">Inscrever-me</a>
-            </article>
-        </section>
+    <main id="topo">
 
-        <section class="catalogo">
-            <article class="cartao">
-                <h3>Ensaio sobre a Cegueira</h3>
-                <p>José Saramago</p>
-            </article>
-            <article class="cartao">
-                <h3>Os Maias</h3>
-                <p>Eça de Queirós</p>
-            </article>
-            <article class="cartao">
-                <h3>Mensagem</h3>
-                <p>Fernando Pessoa</p>
-            </article>
-        </section>
-
-        <!-- ===== Catálogo dinâmico · exercícios 06 a 09 ===== -->
-        <section id="catalogo-dinamico">
-            <h2 id="resumo">A carregar catálogo…</h2>
-
-            <div class="barra-catalogo">
-                <input id="pesquisa-catalogo" type="search"
-                       placeholder="Pesquisar por título ou autor…"
-                       aria-label="Pesquisar no catálogo">
-                <button id="so-disponiveis" type="button" aria-pressed="false">Só disponíveis</button>
-                <button id="tema" type="button" aria-pressed="false">🌙 Modo escuro</button>
+        <!-- ================= Hero ================= -->
+        <section class="hero revelar">
+            <div>
+                <span class="etiqueta-seccao">Biblioteca do Bairro · desde 1987</span>
+                <h1>Livros que ficam <em>contigo</em>, mesmo depois de fechares o browser.</h1>
+                <p class="entrada">
+                    Um catálogo vivo, uma lista de leitura que sobrevive a recarregamentos e
+                    preferências que se lembram de ti. Tudo guardado no teu browser, com o
+                    prefixo <code>biblioteca:</code> — visível e apagável a qualquer momento.
+                </p>
+                <div class="hero-acoes">
+                    <a class="botao" href="#catalogo">Ver o catálogo</a>
+                    <a class="botao botao--fantasma" href="#conta">A minha lista</a>
+                </div>
             </div>
 
-            <ul id="lista-livros"></ul>
+            <div class="estatisticas">
+                <div class="estatistica">
+                    <strong id="stat-livros">—</strong>
+                    <span>livros no catálogo</span>
+                </div>
+                <div class="estatistica">
+                    <strong id="stat-disponiveis">—</strong>
+                    <span>disponíveis agora</span>
+                </div>
+                <div class="estatistica">
+                    <strong id="stat-lista">0</strong>
+                    <span>na tua lista</span>
+                </div>
+                <div class="estatistica estatistica--destaque">
+                    <strong id="stat-visitas">1</strong>
+                    <span id="texto-visitas">primeira visita</span>
+                    <div>
+                        <button id="recomecar" type="button" class="botao botao--mini"
+                                style="margin-top:.5rem;border-color:rgba(255,255,255,.45);color:inherit">
+                            ↺ recomeçar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <form id="inscricao" novalidate>
-                <h2>Clube de leitura</h2>
-                <input name="nome" type="text" placeholder="Nome" aria-label="Nome">
-                <input name="email" type="email" placeholder="E-mail" aria-label="E-mail">
-                <button type="submit">Inscrever-me</button>
-                <p id="mensagem" role="status" aria-live="polite"></p>
-            </form>
+        <!-- ================= Catálogo ================= -->
+        <section id="catalogo" class="revelar">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="etiqueta-seccao">Catálogo</span>
+                    <h2>O que está na estante</h2>
+                    <p>Os dados vêm do <code>livros.json</code>. Pesquisa por título ou autor — sem acentos e sem maiúsculas.</p>
+                </div>
+            </div>
+
+            <div class="ferramentas">
+                <label class="campo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+                    </svg>
+                    <input id="pesquisa" type="search" placeholder="Pesquisar por título ou autor…"
+                           aria-label="Pesquisar no catálogo" autocomplete="off">
+                </label>
+                <button id="so-disponiveis" type="button" class="pilula-toggle" aria-pressed="false">
+                    Só disponíveis
+                </button>
+                <button id="limpar-pesquisas" type="button" class="botao botao--mini">limpar pesquisas</button>
+            </div>
+
+            <div id="ultimas-pesquisas" class="chips" aria-label="Últimas pesquisas"></div>
+
+            <div id="lista-livros" class="grelha-livros" aria-live="polite"></div>
+        </section>
+
+        <!-- ================= Conta ================= -->
+        <section id="conta" class="revelar">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="etiqueta-seccao">A minha conta</span>
+                    <h2>Quem és e o que andas a ler</h2>
+                </div>
+            </div>
+
+            <div class="painel-duplo">
+                <!-- ficha do leitor -->
+                <article class="painel">
+                    <h3>Ficha do leitor</h3>
+                    <p class="ajuda">Guardada em <code>biblioteca:leitor</code> como objeto — nome, cartão e géneros.</p>
+
+                    <div class="leitor-topo" id="leitor-topo" hidden>
+                        <div class="avatar" id="leitor-inicial">A</div>
+                        <div>
+                            <div class="leitor-nome" id="leitor-nome"></div>
+                            <div class="leitor-cartao" id="leitor-cartao"></div>
+                        </div>
+                    </div>
+
+                    <div class="generos" id="leitor-generos" hidden></div>
+
+                    <form id="form-leitor" class="form-linha" autocomplete="off">
+                        <input class="entrada-texto" name="nome" placeholder="Nome" aria-label="Nome" required>
+                        <input class="entrada-texto" name="cartao" placeholder="Nº de cartão" aria-label="Número de cartão">
+                        <input class="entrada-texto" name="generos" placeholder="Géneros (com vírgulas)" aria-label="Géneros preferidos">
+                        <button class="botao" type="submit">Guardar ficha</button>
+                        <button class="botao botao--mini botao--perigo" type="button" id="esquecer-leitor">
+                            esquecer-me
+                        </button>
+                    </form>
+                </article>
+
+                <!-- lista de leitura -->
+                <article class="painel">
+                    <h3>Lista de leitura</h3>
+                    <p class="ajuda">Um array de objetos <code>{ titulo, lido }</code> em <code>biblioteca:leitura</code>. O DOM é sempre redesenhado a partir do array.</p>
+
+                    <div class="progresso">
+                        <div class="anel" id="anel" style="--p:0"><span id="anel-texto">0/0</span></div>
+                        <div>
+                            <div id="resumo-leitura" style="font-size:.92rem">Ainda não tens livros na lista.</div>
+                            <div style="font-size:.78rem;color:var(--tinta-suave)">marca, remove e volta amanhã — fica tudo igual</div>
+                        </div>
+                    </div>
+
+                    <form id="form-leitura" class="form-linha" autocomplete="off">
+                        <input class="entrada-texto" name="titulo" placeholder="Título do livro" aria-label="Título do livro">
+                        <button class="botao" type="submit">Adicionar</button>
+                    </form>
+
+                    <div class="chips" role="group" aria-label="Filtrar lista">
+                        <button type="button" data-filtro="todos" aria-pressed="true">todos</button>
+                        <button type="button" data-filtro="porLer" aria-pressed="false">por ler</button>
+                        <button type="button" data-filtro="lidos" aria-pressed="false">lidos</button>
+                    </div>
+
+                    <ul id="lista-leitura" class="lista-leitura"></ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Os meus dados ================= -->
+        <section id="dados" class="revelar">
+            <div class="painel-dados">
+                <div>
+                    <h3>Os meus dados neste browser</h3>
+                    <p>Vê tudo o que este site guardou, apaga chave a chave ou leva tudo num ficheiro JSON. Nada disto sai do teu computador.</p>
+                </div>
+                <div class="accao-dados">
+                    <button class="botao" type="button" id="abrir-dados">Ver os meus dados</button>
+                    <button class="botao botao--fantasma" type="button" id="exportar">Exportar JSON</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= Apontamentos ================= -->
+        <section id="apontamentos" class="revelar">
+            <div class="cabecalho-seccao">
+                <div>
+                    <span class="etiqueta-seccao">Apontamentos</span>
+                    <h2>O que ficou por trás do código</h2>
+                </div>
+            </div>
+
+            <div class="apontamentos">
+                <details class="nota">
+                    <summary>06 · Os quatro erros do código original</summary>
+                    <div class="conteudo">
+                        <ol>
+                            <li><code>getItem("leitura")</code> devolve <strong>texto</strong>, não um array — falta <code>JSON.parse</code>.</li>
+                            <li><code>setItem("leitura", lista)</code> grava <code>[object Object]</code> — falta <code>JSON.stringify</code>.</li>
+                            <li><code>if (tema == true)</code> nunca é verdadeiro: o que está guardado é o texto <code>"escuro"</code>.</li>
+                            <li><code>dados.nome</code> rebenta na primeira visita, porque <code>JSON.parse(null)</code> dá <code>null</code>.</li>
+                        </ol>
+                        <pre>const lista = ler("biblioteca:leitura", []);        // 1
+lista.push("Os Lusíadas");
+guardar("biblioteca:leitura", lista);                // 2
+
+const tema = localStorage.getItem("biblioteca:tema");
+if (tema === "escuro") document.body.classList.add("escuro");   // 3
+
+const dados = ler("biblioteca:leitor", null);        // 4
+saudacao.textContent = `Olá, ${dados?.nome ?? "visitante"}`;</pre>
+                    </div>
+                </details>
+
+                <details class="nota">
+                    <summary>01 · Espreitar o armazenamento</summary>
+                    <div class="conteudo">
+                        <p>No separador <strong>Aplicação</strong> das DevTools aparecem as chaves desta origem — agora são
+                        <code>biblioteca:tema</code>, <code>biblioteca:leitura</code>, <code>biblioteca:visitas</code> e as restantes.
+                        <code>localStorage.length</code> diz quantas são e cada site só vê as suas. Os cookies ficam na mesma secção.</p>
+                    </div>
+                </details>
+
+                <details class="nota">
+                    <summary>02 · Onde guardar cada coisa</summary>
+                    <div class="conteudo">
+                        <p><strong>Tema escuro</strong> → localStorage (preferência pequena, permanente).
+                        <strong>Sessão de login</strong> → cookie HttpOnly (o servidor precisa dela, o JavaScript não a deve ler).
+                        <strong>Passo de um formulário</strong> → sessionStorage (só neste separador).
+                        <strong>Mil capas offline</strong> → IndexedDB (ficheiros e muito espaço).
+                        <strong>Reservas</strong> → servidor (são partilhadas por todos).</p>
+                    </div>
+                </details>
+
+                <details class="nota">
+                    <summary>04 · Prever o resultado</summary>
+                    <div class="conteudo">
+                        <pre>localStorage.getItem("n")              // "20"  (o valor é substituído e vem sempre texto)
+localStorage.getItem("n") + 5          // "205" (concatena, não soma)
+Boolean(localStorage.getItem("ativo")) // true  (o texto "false" é verdadeiro)
+localStorage.getItem("Ativo")          // null  (as chaves distinguem maiúsculas)
+localStorage.length                    // 2     ("n" e "ativo")</pre>
+                    </div>
+                </details>
+
+                <details class="nota">
+                    <summary>12 · Auditoria de privacidade</summary>
+                    <div class="conteudo">
+                        <p><strong>tema</strong> → aceitável, preferência inofensiva.
+                        <strong>token</strong> → a evitar: qualquer script o lê, um XSS leva-o; usar cookie HttpOnly.
+                        <strong>leitor com NIF</strong> → arriscado: guardar só o nome, o resto no servidor.
+                        <strong>desconto</strong> → a evitar: o utilizador edita o valor, quem decide é o servidor.
+                        <strong>passo</strong> em sessionStorage → aceitável, é temporário.
+                        <strong>palavraPasse</strong> → nunca.</p>
+                    </div>
+                </details>
+            </div>
         </section>
     </main>
 
-    <aside>
-        <h3>Horário</h3>
-        <p>Segunda a Sexta: 09h00 - 19h00</p>
-        <p>Sábado: 10h00 - 13h00</p>
-    </aside>
-
+    <!-- ================= Rodapé ================= -->
     <footer class="rodape">
         <div>
-            <p><strong>Morada:</strong> Rua das Flores, 12</p>
+            <h4>Morada</h4>
+            <p>Rua das Flores, 12<br>4700 Braga</p>
         </div>
         <div>
-            <p><strong>Horário:</strong> Aberto todos os dias úteis</p>
+            <h4>Horário</h4>
+            <p>Segunda a sexta, 09h00–19h00<br>Sábado, 10h00–13h00</p>
         </div>
         <div>
-            <p><strong>Contactos:</strong> geral@biblioteca.pt</p>
+            <h4>Contactos</h4>
+            <p>geral@biblioteca.pt<br>253 000 000</p>
+        </div>
+        <div>
+            <h4>Feito com</h4>
+            <p>HTML, CSS e JavaScript — sem frameworks.<br>Dados guardados só neste browser.</p>
         </div>
     </footer>
 
-    <!-- ==========================================================================
-         JavaScript do Zero — Exercícios 06 a 09 (catálogo, DOM, eventos, storage)
-         ========================================================================== -->
-    <script>
-        // O catálogo começa vazio: os dados vêm do livros.json (exercício 09).
-        let catalogo = [];
+    <div id="toasts" class="toasts" aria-live="polite" aria-atomic="true"></div>
 
-        // ---------------------------------------------------------------------
-        // EXERCÍCIO 06 — O catálogo em objetos
-        // ---------------------------------------------------------------------
-
-        // 02 — «Título — Autor (ano)» para cada livro (na consola)
-        function mostrarCatalogo(lista = catalogo) {
-            console.log("\n--- Catálogo (consola) ---");
-            for (const { titulo, autor, ano } of lista) {
-                console.log(`«${titulo} — ${autor} (${ano})»`);
-            }
-        }
-
-        // 03 — quantos estão disponíveis (contado a partir do array)
-        function contarDisponiveis(lista = catalogo) {
-            return lista.filter((livro) => livro.disponivel).length;
-        }
-
-        // 04 — o livro mais antigo
-        function livroMaisAntigo(lista = catalogo) {
-            return lista.reduce((maisAntigo, livro) =>
-                livro.ano < maisAntigo.ano ? livro : maisAntigo
-            );
-        }
-
-        // 05 — emprestar(titulo): marca como emprestado, ou avisa se não puder
-        function emprestar(titulo) {
-            const livro = catalogo.find(
-                (l) => normalizar(l.titulo) === normalizar(titulo)
-            );
-
-            if (!livro) {                       // não existe: avisa, sem erro
-                console.warn(`⚠ Aviso: «${titulo}» não existe no catálogo.`);
-                return false;
-            }
-            if (!livro.disponivel) {            // já emprestado: avisa
-                console.warn(`⚠ Aviso: «${livro.titulo}» já está emprestado.`);
-                return false;
-            }
-
-            livro.disponivel = false;
-            console.log(`✓ «${livro.titulo}» emprestado.`);
-            return true;
-        }
-
-        // ---------------------------------------------------------------------
-        // Elementos da página (exercício 07)
-        // ---------------------------------------------------------------------
-        const lista = document.querySelector("#lista-livros");
-        const resumo = document.querySelector("#resumo");
-        const pesquisa = document.querySelector("#pesquisa-catalogo");
-        const botaoDisponiveis = document.querySelector("#so-disponiveis");
-        const botaoTema = document.querySelector("#tema");
-        const form = document.querySelector("#inscricao");
-        const mensagem = document.querySelector("#mensagem");
-
-        let soDisponiveis = false;
-
-        // Tirar acentos e maiúsculas: pesquisa tolerante
-        function normalizar(texto) {
-            return String(texto)
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .trim();
-        }
-
-        // ---------------------------------------------------------------------
-        // EXERCÍCIO 07 — O catálogo na página
-        // ---------------------------------------------------------------------
-        function livrosFiltrados() {
-            const termo = normalizar(pesquisa ? pesquisa.value : "");
-
-            return catalogo.filter((livro) => {
-                const corresponde = normalizar(`${livro.titulo} ${livro.autor}`).includes(termo);
-                const passaFiltro = !soDisponiveis || livro.disponivel;
-                return corresponde && passaFiltro;
-            });
-        }
-
-        function mostrarLivros(livros = livrosFiltrados()) {
-            if (!lista) return;
-
-            lista.replaceChildren();            // limpa sem innerHTML
-
-            if (livros.length === 0) {
-                const vazio = document.createElement("li");
-                vazio.className = "vazio";
-                vazio.textContent = "Nenhum livro encontrado";
-                lista.append(vazio);
-            }
-
-            for (const livro of livros) {
-                lista.append(criarItem(livro));
-            }
-
-            // 05 — resumo calculado, nunca escrito à mão
-            if (resumo) {
-                resumo.textContent = `${catalogo.length} livros, ${contarDisponiveis()} disponíveis`;
-            }
-        }
-
-        function criarItem(livro) {
-            const item = document.createElement("li");
-
-            const titulo = document.createElement("span");
-            titulo.className = "titulo";
-            titulo.textContent = `«${livro.titulo} — ${livro.autor} (${livro.ano})»`;
-
-            if (!livro.disponivel) {            // 04 — classe + palavra «emprestado»
-                item.classList.add("indisponivel");
-                const etiqueta = document.createElement("em");
-                etiqueta.textContent = " — emprestado";
-                titulo.append(etiqueta);
-            }
-
-            const acoes = document.createElement("div");
-            acoes.className = "acoes";
-
-            const emprestarBotao = document.createElement("button");
-            emprestarBotao.type = "button";
-            emprestarBotao.textContent = "Emprestar";
-            emprestarBotao.disabled = !livro.disponivel;
-            emprestarBotao.addEventListener("click", () => {
-                emprestar(livro.titulo);
-                mostrarLivros();
-            });
-
-            const guardar = document.createElement("button");
-            guardar.type = "button";
-            guardar.className = "favorito";
-            const guardado = favoritos.includes(livro.titulo);
-            guardar.textContent = guardado ? "★ Guardado" : "☆ Guardar";
-            guardar.setAttribute("aria-pressed", String(guardado));
-            if (guardado) guardar.classList.add("ativo");
-            guardar.addEventListener("click", () => alternarFavorito(livro.titulo));
-
-            acoes.append(emprestarBotao, guardar);
-            item.append(titulo, acoes);
-            return item;
-        }
-
-        // ---------------------------------------------------------------------
-        // EXERCÍCIO 08 — Pesquisar e inscrever
-        // ---------------------------------------------------------------------
-        pesquisa?.addEventListener("input", () => mostrarLivros());
-
-        botaoDisponiveis?.addEventListener("click", () => {
-            soDisponiveis = !soDisponiveis;
-            botaoDisponiveis.classList.toggle("ativo", soDisponiveis);
-            botaoDisponiveis.setAttribute("aria-pressed", String(soDisponiveis));
-            mostrarLivros();
-        });
-
-        form?.addEventListener("submit", (evento) => {
-            evento.preventDefault();            // não recarregar a página
-
-            const nome = form.nome.value.trim();
-            const email = form.email.value.trim();
-            const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-            if (nome === "" || !emailValido) {
-                mostrarMensagem("Preencha o nome e um e-mail válido.", "erro");
-                return;
-            }
-
-            mostrarMensagem(`Obrigado, ${nome}! Inscrição feita com o e-mail ${email}.`, "sucesso");
-            form.reset();
-        });
-
-        function mostrarMensagem(texto, tipo) {
-            if (!mensagem) return;
-            mensagem.textContent = texto;
-            mensagem.className = tipo;
-        }
-
-        // ---------------------------------------------------------------------
-        // EXERCÍCIO 09 — Lembrar e carregar
-        // ---------------------------------------------------------------------
-        const CHAVE_TEMA = "biblioteca-tema";
-        const CHAVE_FAVORITOS = "biblioteca-favoritos";
-
-        function lerGuardado(chave, porOmissao) {
-            try {
-                const texto = localStorage.getItem(chave);
-                return texto === null ? porOmissao : JSON.parse(texto);
-            } catch {
-                return porOmissao;
-            }
-        }
-
-        function guardar(chave, valor) {
-            try {
-                localStorage.setItem(chave, JSON.stringify(valor));
-            } catch {
-                console.warn("Não foi possível guardar no localStorage.");
-            }
-        }
-
-        let favoritos = lerGuardado(CHAVE_FAVORITOS, []);
-
-        function alternarFavorito(titulo) {
-            favoritos = favoritos.includes(titulo)
-                ? favoritos.filter((t) => t !== titulo)     // tirar dos favoritos
-                : [...favoritos, titulo];                    // acrescentar
-
-            guardar(CHAVE_FAVORITOS, favoritos);
-            mostrarLivros();
-        }
-
-        // Modo escuro: usa o [data-tema="escuro"] que o style.css do site já define
-        function aplicarTema(tema) {
-            const escuro = tema === "escuro";
-            document.documentElement.dataset.tema = escuro ? "escuro" : "claro";
-            if (botaoTema) {
-                botaoTema.textContent = escuro ? "☀ Modo claro" : "🌙 Modo escuro";
-                botaoTema.setAttribute("aria-pressed", String(escuro));
-            }
-        }
-
-        botaoTema?.addEventListener("click", () => {
-            const escuroAgora = document.documentElement.dataset.tema === "escuro";
-            const novo = escuroAgora ? "claro" : "escuro";
-            guardar(CHAVE_TEMA, novo);
-            aplicarTema(novo);
-        });
-
-        aplicarTema(lerGuardado(CHAVE_TEMA, "claro"));
-
-        // Carregar o catálogo do livros.json (fetch com try/catch)
-        async function carregarLivros() {
-            try {
-                const resposta = await fetch("livros.json");
-                if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-
-                catalogo = await resposta.json();
-
-                mostrarCatalogo();                       // exercício 06 na consola
-                console.log(`Livros disponíveis: ${contarDisponiveis()}`);
-                const antigo = livroMaisAntigo();
-                if (antigo) console.log(`Livro mais antigo: «${antigo.titulo}» (${antigo.ano})`);
-
-                mostrarLivros();
-            } catch (erro) {
-                console.error("Não foi possível carregar livros.json:", erro);
-                if (resumo) resumo.textContent = "Catálogo indisponível";
-                if (lista) {
-                    lista.replaceChildren();
-                    const aviso = document.createElement("li");
-                    aviso.className = "erro";
-                    aviso.textContent = "Não foi possível carregar o catálogo (livros.json).";
-                    lista.append(aviso);
-                }
-            }
-        }
-
-        carregarLivros();
-    </script>
+    <!-- ================= Modal dos dados ================= -->
+    <dialog id="modal-dados">
+        <div class="modal-topo">
+            <h3>Os meus dados</h3>
+            <button class="botao botao--mini" type="button" id="fechar-modal">fechar</button>
+        </div>
+        <div class="modal-corpo" id="corpo-dados"></div>
+        <div class="modal-rodape">
+            <span id="total-dados" style="font-size:.8rem;color:var(--tinta-suave)"></span>
+            <span style="display:flex;gap:.5rem;flex-wrap:wrap">
+                <button class="botao botao--mini botao--perigo" type="button" id="apagar-tudo">apagar tudo</button>
+                <button class="botao botao--mini" type="button" id="fechar-modal-2">voltar</button>
+            </span>
+        </div>
+    </dialog>
 
 </body>
 </html>
