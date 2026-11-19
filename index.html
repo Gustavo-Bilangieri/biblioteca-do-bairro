@@ -13,18 +13,16 @@
     <link rel="stylesheet" href="style.css">
     <script src="src.js" defer></script>
 
+    <!-- ===== Estilos do catálogo dinâmico (exercícios 06 a 09) ===== -->
     <style>
-        /* ===== Catálogo dinâmico + exercícios de localStorage ===== */
-        #catalogo-dinamico,
-        #local-storage {
+        #catalogo-dinamico {
             --cartao: #ffffff;
             --borda: #e3ddd0;
             max-width: 46rem;
             margin: 2rem auto 0;
         }
 
-        [data-tema="escuro"] #catalogo-dinamico,
-        [data-tema="escuro"] #local-storage {
+        [data-tema="escuro"] #catalogo-dinamico {
             --cartao: #22354f;
             --borda: #35506f;
         }
@@ -47,9 +45,7 @@
         .barra-catalogo button,
         #inscricao input,
         #inscricao button,
-        #lista-livros button,
-        .cartao-ex input,
-        .cartao-ex button {
+        #lista-livros button {
             font: inherit;
             font-size: .95rem;
             border: 1px solid var(--borda);
@@ -63,12 +59,10 @@
 
         .barra-catalogo button,
         #lista-livros button,
-        #inscricao button,
-        .cartao-ex button { cursor: pointer; }
+        #inscricao button { cursor: pointer; }
 
         .barra-catalogo button:hover,
-        #lista-livros button:hover,
-        .cartao-ex button:hover { border-color: var(--cor-principal); }
+        #lista-livros button:hover { border-color: var(--cor-principal); }
 
         .barra-catalogo button.ativo {
             background: var(--cor-principal);
@@ -124,137 +118,9 @@
         #mensagem { min-height: 1.4rem; font-size: .9rem; margin: 0; }
         #mensagem.erro { color: var(--cor-destaque); }
         #mensagem.sucesso { color: var(--cor-principal); font-weight: 600; }
-
-        /* ===== Faixa de aviso (exercício 09) ===== */
-        #faixa-aviso {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: .7rem 1rem;
-            background: var(--cor-principal);
-            color: var(--cor-fundo);
-            font-size: .95rem;
-        }
-
-        #faixa-aviso[hidden] { display: none; }
-
-        #faixa-aviso button {
-            font: inherit;
-            font-size: .85rem;
-            border: 1px solid currentColor;
-            background: transparent;
-            color: inherit;
-            border-radius: 6px;
-            padding: .2rem .6rem;
-            cursor: pointer;
-        }
-
-        /* ===== Secção dos exercícios ===== */
-        #local-storage h2 { margin-bottom: .25rem; }
-
-        .nota-seccao {
-            font-size: .9rem;
-            color: var(--cor-destaque);
-            margin: 0 0 1.25rem;
-        }
-
-        .cartao-ex {
-            background: var(--cartao);
-            border: 1px solid var(--borda);
-            border-radius: var(--raio, 12px);
-            padding: 1rem 1.1rem;
-            margin-bottom: 1rem;
-        }
-
-        .cartao-ex h3 {
-            margin: 0 0 .6rem;
-            font-size: 1rem;
-            color: var(--cor-principal);
-        }
-
-        .cartao-ex form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .5rem;
-            margin-bottom: .6rem;
-        }
-
-        .cartao-ex form input { flex: 1 1 12rem; }
-
-        .cartao-ex p { margin: .4rem 0; font-size: .95rem; }
-
-        #lista-leitura {
-            list-style: none;
-            margin: .6rem 0 0;
-            padding: 0;
-            display: grid;
-            gap: .35rem;
-        }
-
-        #lista-leitura li {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            flex-wrap: wrap;
-            border-bottom: 1px dashed var(--borda);
-            padding: .3rem 0;
-            font-size: .95rem;
-        }
-
-        #lista-leitura li.lido span.titulo { text-decoration: line-through; opacity: .6; }
-        #lista-leitura li span.titulo { flex: 1 1 10rem; }
-
-        .chips { display: flex; gap: .4rem; flex-wrap: wrap; margin: .4rem 0 .8rem; }
-
-        .chips button {
-            font-size: .85rem;
-            padding: .25rem .6rem;
-            border-radius: 999px;
-        }
-
-        .chips .vazio { font-size: .85rem; color: var(--cor-destaque); }
-
-        #generos-leitor li {
-            border: 1px solid var(--borda);
-            border-radius: 999px;
-            padding: .2rem .65rem;
-            font-size: .85rem;
-        }
-
-        details {
-            background: var(--cartao);
-            border: 1px solid var(--borda);
-            border-radius: var(--raio, 12px);
-            padding: .8rem 1.1rem;
-            margin-bottom: .8rem;
-        }
-
-        details summary {
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--cor-principal);
-            font-size: .95rem;
-        }
-
-        details p, details li { font-size: .92rem; }
-        details pre {
-            background: rgba(0, 0, 0, .06);
-            padding: .7rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: .8rem;
-        }
     </style>
 </head>
 <body>
-
-    <!-- Exercício 09: faixa de aviso, fechada só nesta visita (sessionStorage) -->
-    <div id="faixa-aviso" hidden>
-        <span>Hoje a biblioteca fecha às 13h.</span>
-        <button id="fechar-aviso" type="button">Fechar</button>
-    </div>
 
     <header class="cabecalho">
         <h1>Biblioteca do Bairro</h1>
@@ -262,7 +128,6 @@
             <ul>
                 <li><a href="index.html">Início</a></li>
                 <li><a href="#catalogo-dinamico">Catálogo</a></li>
-                <li><a href="#local-storage">Exercícios</a></li>
                 <li><a href="eventos.html">Eventos</a></li>
                 <li><a href="sobre.html">Sobre</a></li>
                 <li><a href="contactos.html">Contactos</a></li>
@@ -272,7 +137,7 @@
 
     <main>
         <section class="aviso">
-            <p>Feira do Livro · 10 a 15 de novembro</p>
+            <p>Feira do Livre · 10 a 15 de novembro</p>
         </section>
 
         <section>
@@ -299,7 +164,7 @@
             </article>
         </section>
 
-        <!-- ===== Catálogo dinâmico ===== -->
+        <!-- ===== Catálogo dinâmico · exercícios 06 a 09 ===== -->
         <section id="catalogo-dinamico">
             <h2 id="resumo">A carregar catálogo…</h2>
 
@@ -321,87 +186,6 @@
                 <p id="mensagem" role="status" aria-live="polite"></p>
             </form>
         </section>
-
-        <!-- ===== Exercícios do localStorage do Zero ===== -->
-        <section id="local-storage">
-            <h2>localStorage do Zero</h2>
-            <p class="nota-seccao">Tudo o que fica guardado usa o prefixo <code>biblioteca:</code> e pode ser visto em DevTools → Aplicação → Local Storage.</p>
-
-            <article class="cartao-ex">
-                <h3>03 · Contador de visitas</h3>
-                <p id="contador-visitas">A contar…</p>
-                <button id="recomecar" type="button">Recomeçar</button>
-            </article>
-
-            <article class="cartao-ex">
-                <h3>05 · A ficha do leitor</h3>
-                <form id="ficha-leitor">
-                    <input name="nome" placeholder="Nome" aria-label="Nome">
-                    <input name="cartao" placeholder="Número de cartão" aria-label="Número de cartão">
-                    <input name="generos" placeholder="Géneros (com vírgulas)" aria-label="Géneros">
-                    <button type="submit">Guardar ficha</button>
-                </form>
-                <p id="saudacao-leitor">Ainda não há ficha guardada.</p>
-                <ul id="generos-leitor" class="chips"></ul>
-                <button id="esquecer-leitor" type="button">Esquecer-me</button>
-            </article>
-
-            <article class="cartao-ex">
-                <h3>07 · O tema que se lembra</h3>
-                <p>O botão «Modo escuro» do catálogo guarda a escolha. Sem escolha guardada, a página segue o tema do sistema.</p>
-                <button id="seguir-sistema" type="button">Seguir o sistema</button>
-                <p id="estado-tema"></p>
-            </article>
-
-            <article class="cartao-ex">
-                <h3>08 · A lista de leitura que fica</h3>
-                <form id="form-leitura">
-                    <input name="titulo" placeholder="Título do livro" aria-label="Título do livro">
-                    <button type="submit">Adicionar</button>
-                </form>
-                <ul id="lista-leitura"></ul>
-            </article>
-
-            <article class="cartao-ex">
-                <h3>11 · Últimas pesquisas</h3>
-                <p>As 5 últimas pesquisas do catálogo, guardadas com versão e data (expiram em 7 dias).</p>
-                <div id="ultimas-pesquisas" class="chips"></div>
-                <button id="limpar-pesquisas" type="button">Limpar pesquisas</button>
-            </article>
-
-            <details>
-                <summary>06 · Corrigir o código</summary>
-                <p>O código do enunciado tinha quatro problemas:</p>
-                <ol>
-                    <li><code>getItem("leitura")</code> devolve <strong>texto</strong>, não um array — tem de levar <code>JSON.parse</code>.</li>
-                    <li><code>setItem("leitura", lista)</code> guarda <code>[object Object]</code> — tem de levar <code>JSON.stringify</code>.</li>
-                    <li><code>if (tema == true)</code> nunca é verdadeiro: o valor guardado é o texto <code>"escuro"</code>.</li>
-                    <li><code>dados.nome</code> rebenta quando ainda não há leitor guardado, porque o <code>JSON.parse(null)</code> dá <code>null</code>.</li>
-                </ol>
-                <pre>const lista = ler("biblioteca:leitura", []);        // 1
-lista.push("Os Lusíadas");
-guardar("biblioteca:leitura", lista);                // 2
-
-const tema = localStorage.getItem("biblioteca:tema");
-if (tema === "escuro") document.body.classList.add("escuro");   // 3
-
-const dados = ler("biblioteca:leitor", null);        // 4
-saudacao.textContent = `Olá, ${dados?.nome ?? "visitante"}`;</pre>
-            </details>
-
-            <details>
-                <summary>01, 02, 04 e 12 · Respostas</summary>
-                <p><strong>01 · Espreitar o armazenamento.</strong> No separador Aplicação aparecem as chaves do site (por exemplo <code>biblioteca:tema</code>, <code>biblioteca:leitura</code>). <code>localStorage.length</code> diz quantas são e cada site só vê as suas. Os cookies ficam na mesma secção, em «Cookies».</p>
-                <p><strong>02 · Onde guardavas?</strong> Tema escuro → <em>localStorage</em> (preferência pequena e permanente). Sessão de login → <em>cookie HttpOnly</em> (o servidor precisa dela e o JavaScript não a deve ler). Passo de um formulário → <em>sessionStorage</em> (só neste separador). Mil capas offline → <em>IndexedDB</em> (ficheiros e muito espaço). Reservas → <em>servidor</em> (são partilhadas por todos).</p>
-                <p><strong>04 · Prevê o resultado.</strong></p>
-                <pre>localStorage.getItem("n")              // "20"  (a chave é substituída e vem sempre texto)
-localStorage.getItem("n") + 5          // "205" (concatena, não soma)
-Boolean(localStorage.getItem("ativo")) // true  (o texto "false" é verdadeiro)
-localStorage.getItem("Ativo")          // null  (as chaves distinguem maiúsculas)
-localStorage.length                    // 2     ("n" e "ativo")</pre>
-                <p><strong>12 · Auditoria de privacidade.</strong> <code>tema</code> → aceitável (preferência inofensiva). <code>token</code> → a evitar: qualquer script o lê e um XSS leva-o; usar cookie HttpOnly. <code>leitor</code> com NIF → arriscado: guardar só o nome e deixar o resto no servidor. <code>desconto</code> → a evitar: o utilizador edita o valor, o servidor é que decide. <code>passo</code> em sessionStorage → aceitável, é temporário. <code>palavraPasse</code> → nunca.</p>
-            </details>
-        </section>
     </main>
 
     <aside>
@@ -422,43 +206,18 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
         </div>
     </footer>
 
+    <!-- ==========================================================================
+         JavaScript do Zero — Exercícios 06 a 09 (catálogo, DOM, eventos, storage)
+         ========================================================================== -->
     <script>
-        // =====================================================================
-        // Armazenamento: duas funções para tudo (só texto, JSON e try/catch)
-        // =====================================================================
-        function ler(chave, porOmissao) {
-            try {
-                const texto = localStorage.getItem(chave);
-                return texto === null ? porOmissao : JSON.parse(texto);
-            } catch {
-                return porOmissao;   // JSON estragado não rebenta a página
-            }
-        }
-
-        function guardar(chave, valor) {
-            try {
-                localStorage.setItem(chave, JSON.stringify(valor));
-                return true;
-            } catch (erro) {
-                console.warn("Não foi possível guardar:", erro.name);
-                return false;
-            }
-        }
-
-        const CHAVE_TEMA = "biblioteca:tema";
-        const CHAVE_FAVORITOS = "biblioteca:favoritos";
-        const CHAVE_LEITOR = "biblioteca:leitor";
-        const CHAVE_LEITURA = "biblioteca:leitura";
-        const CHAVE_PESQUISAS = "biblioteca:pesquisas";
-        const CHAVE_VISITAS = "biblioteca:visitas";
-        const CHAVE_AVISO = "biblioteca:aviso-fechado";
-        const SETE_DIAS = 7 * 24 * 60 * 60 * 1000;
-
-        // =====================================================================
-        // Catálogo (vem do livros.json)
-        // =====================================================================
+        // O catálogo começa vazio: os dados vêm do livros.json (exercício 09).
         let catalogo = [];
 
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 06 — O catálogo em objetos
+        // ---------------------------------------------------------------------
+
+        // 02 — «Título — Autor (ano)» para cada livro (na consola)
         function mostrarCatalogo(lista = catalogo) {
             console.log("\n--- Catálogo (consola) ---");
             for (const { titulo, autor, ano } of lista) {
@@ -466,30 +225,41 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
             }
         }
 
+        // 03 — quantos estão disponíveis (contado a partir do array)
         function contarDisponiveis(lista = catalogo) {
             return lista.filter((livro) => livro.disponivel).length;
         }
 
+        // 04 — o livro mais antigo
         function livroMaisAntigo(lista = catalogo) {
             return lista.reduce((maisAntigo, livro) =>
                 livro.ano < maisAntigo.ano ? livro : maisAntigo
             );
         }
 
+        // 05 — emprestar(titulo): marca como emprestado, ou avisa se não puder
         function emprestar(titulo) {
-            const livro = catalogo.find((l) => normalizar(l.titulo) === normalizar(titulo));
-            if (!livro) {
-                console.warn(`Aviso: «${titulo}» não existe no catálogo.`);
+            const livro = catalogo.find(
+                (l) => normalizar(l.titulo) === normalizar(titulo)
+            );
+
+            if (!livro) {                       // não existe: avisa, sem erro
+                console.warn(`⚠ Aviso: «${titulo}» não existe no catálogo.`);
                 return false;
             }
-            if (!livro.disponivel) {
-                console.warn(`Aviso: «${livro.titulo}» já está emprestado.`);
+            if (!livro.disponivel) {            // já emprestado: avisa
+                console.warn(`⚠ Aviso: «${livro.titulo}» já está emprestado.`);
                 return false;
             }
+
             livro.disponivel = false;
+            console.log(`✓ «${livro.titulo}» emprestado.`);
             return true;
         }
 
+        // ---------------------------------------------------------------------
+        // Elementos da página (exercício 07)
+        // ---------------------------------------------------------------------
         const lista = document.querySelector("#lista-livros");
         const resumo = document.querySelector("#resumo");
         const pesquisa = document.querySelector("#pesquisa-catalogo");
@@ -499,8 +269,8 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
         const mensagem = document.querySelector("#mensagem");
 
         let soDisponiveis = false;
-        let favoritos = ler(CHAVE_FAVORITOS, []);
 
+        // Tirar acentos e maiúsculas: pesquisa tolerante
         function normalizar(texto) {
             return String(texto)
                 .normalize("NFD")
@@ -509,8 +279,12 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
                 .trim();
         }
 
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 07 — O catálogo na página
+        // ---------------------------------------------------------------------
         function livrosFiltrados() {
-            const termo = normalizar(pesquisa.value);
+            const termo = normalizar(pesquisa ? pesquisa.value : "");
+
             return catalogo.filter((livro) => {
                 const corresponde = normalizar(`${livro.titulo} ${livro.autor}`).includes(termo);
                 const passaFiltro = !soDisponiveis || livro.disponivel;
@@ -520,7 +294,8 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
 
         function mostrarLivros(livros = livrosFiltrados()) {
             if (!lista) return;
-            lista.replaceChildren();
+
+            lista.replaceChildren();            // limpa sem innerHTML
 
             if (livros.length === 0) {
                 const vazio = document.createElement("li");
@@ -533,7 +308,10 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
                 lista.append(criarItem(livro));
             }
 
-            resumo.textContent = `${catalogo.length} livros, ${contarDisponiveis()} disponíveis`;
+            // 05 — resumo calculado, nunca escrito à mão
+            if (resumo) {
+                resumo.textContent = `${catalogo.length} livros, ${contarDisponiveis()} disponíveis`;
+            }
         }
 
         function criarItem(livro) {
@@ -543,7 +321,7 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
             titulo.className = "titulo";
             titulo.textContent = `«${livro.titulo} — ${livro.autor} (${livro.ano})»`;
 
-            if (!livro.disponivel) {
+            if (!livro.disponivel) {            // 04 — classe + palavra «emprestado»
                 item.classList.add("indisponivel");
                 const etiqueta = document.createElement("em");
                 etiqueta.textContent = " — emprestado";
@@ -562,312 +340,116 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
                 mostrarLivros();
             });
 
-            const botaoGuardar = document.createElement("button");
-            botaoGuardar.type = "button";
-            botaoGuardar.className = "favorito";
-            const jaGuardado = favoritos.includes(livro.titulo);
-            botaoGuardar.textContent = jaGuardado ? "★ Guardado" : "☆ Guardar";
-            botaoGuardar.setAttribute("aria-pressed", String(jaGuardado));
-            if (jaGuardado) botaoGuardar.classList.add("ativo");
-            botaoGuardar.addEventListener("click", () => alternarFavorito(livro.titulo));
+            const guardar = document.createElement("button");
+            guardar.type = "button";
+            guardar.className = "favorito";
+            const guardado = favoritos.includes(livro.titulo);
+            guardar.textContent = guardado ? "★ Guardado" : "☆ Guardar";
+            guardar.setAttribute("aria-pressed", String(guardado));
+            if (guardado) guardar.classList.add("ativo");
+            guardar.addEventListener("click", () => alternarFavorito(livro.titulo));
 
-            acoes.append(emprestarBotao, botaoGuardar);
+            acoes.append(emprestarBotao, guardar);
             item.append(titulo, acoes);
             return item;
         }
 
-        function alternarFavorito(titulo) {
-            favoritos = favoritos.includes(titulo)
-                ? favoritos.filter((t) => t !== titulo)
-                : [...favoritos, titulo];
-            guardar(CHAVE_FAVORITOS, favoritos);
-            mostrarLivros();
-        }
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 08 — Pesquisar e inscrever
+        // ---------------------------------------------------------------------
+        pesquisa?.addEventListener("input", () => mostrarLivros());
 
-        pesquisa.addEventListener("input", () => {
-            mostrarLivros();
-            registarPesquisa(pesquisa.value);   // exercício 11
-        });
-
-        botaoDisponiveis.addEventListener("click", () => {
+        botaoDisponiveis?.addEventListener("click", () => {
             soDisponiveis = !soDisponiveis;
             botaoDisponiveis.classList.toggle("ativo", soDisponiveis);
             botaoDisponiveis.setAttribute("aria-pressed", String(soDisponiveis));
             mostrarLivros();
         });
 
-        form.addEventListener("submit", (evento) => {
-            evento.preventDefault();
+        form?.addEventListener("submit", (evento) => {
+            evento.preventDefault();            // não recarregar a página
+
             const nome = form.nome.value.trim();
             const email = form.email.value.trim();
             const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
             if (nome === "" || !emailValido) {
-                mensagem.textContent = "Preencha o nome e um e-mail válido.";
-                mensagem.className = "erro";
+                mostrarMensagem("Preencha o nome e um e-mail válido.", "erro");
                 return;
             }
 
-            mensagem.textContent = `Obrigado, ${nome}! Inscrição feita com o e-mail ${email}.`;
-            mensagem.className = "sucesso";
+            mostrarMensagem(`Obrigado, ${nome}! Inscrição feita com o e-mail ${email}.`, "sucesso");
             form.reset();
         });
 
-        // =====================================================================
-        // 07 · Tema que se lembra (escolha guardada ganha ao sistema)
-        // =====================================================================
-        function temaDoSistema() {
-            return matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+        function mostrarMensagem(texto, tipo) {
+            if (!mensagem) return;
+            mensagem.textContent = texto;
+            mensagem.className = tipo;
         }
 
-        function aplicarTema(tema) {
-            const escuro = tema === "escuro";
-            document.documentElement.dataset.tema = escuro ? "escuro" : "claro";
-            botaoTema.textContent = escuro ? "☀ Modo claro" : "🌙 Modo escuro";
-            botaoTema.setAttribute("aria-pressed", String(escuro));
+        // ---------------------------------------------------------------------
+        // EXERCÍCIO 09 — Lembrar e carregar
+        // ---------------------------------------------------------------------
+        const CHAVE_TEMA = "biblioteca-tema";
+        const CHAVE_FAVORITOS = "biblioteca-favoritos";
 
-            const estado = document.querySelector("#estado-tema");
-            if (estado) {
-                const guardado = ler(CHAVE_TEMA, null);
-                estado.textContent = guardado
-                    ? `Tema guardado neste browser: ${guardado}.`
-                    : `Sem escolha guardada, a seguir o sistema: ${temaDoSistema()}.`;
+        function lerGuardado(chave, porOmissao) {
+            try {
+                const texto = localStorage.getItem(chave);
+                return texto === null ? porOmissao : JSON.parse(texto);
+            } catch {
+                return porOmissao;
             }
         }
 
-        function aplicarTemaInicial() {
-            aplicarTema(ler(CHAVE_TEMA, null) ?? temaDoSistema());
+        function guardar(chave, valor) {
+            try {
+                localStorage.setItem(chave, JSON.stringify(valor));
+            } catch {
+                console.warn("Não foi possível guardar no localStorage.");
+            }
         }
 
-        botaoTema.addEventListener("click", () => {
-            const novo = document.documentElement.dataset.tema === "escuro" ? "claro" : "escuro";
+        let favoritos = lerGuardado(CHAVE_FAVORITOS, []);
+
+        function alternarFavorito(titulo) {
+            favoritos = favoritos.includes(titulo)
+                ? favoritos.filter((t) => t !== titulo)     // tirar dos favoritos
+                : [...favoritos, titulo];                    // acrescentar
+
+            guardar(CHAVE_FAVORITOS, favoritos);
+            mostrarLivros();
+        }
+
+        // Modo escuro: usa o [data-tema="escuro"] que o style.css do site já define
+        function aplicarTema(tema) {
+            const escuro = tema === "escuro";
+            document.documentElement.dataset.tema = escuro ? "escuro" : "claro";
+            if (botaoTema) {
+                botaoTema.textContent = escuro ? "☀ Modo claro" : "🌙 Modo escuro";
+                botaoTema.setAttribute("aria-pressed", String(escuro));
+            }
+        }
+
+        botaoTema?.addEventListener("click", () => {
+            const escuroAgora = document.documentElement.dataset.tema === "escuro";
+            const novo = escuroAgora ? "claro" : "escuro";
             guardar(CHAVE_TEMA, novo);
             aplicarTema(novo);
         });
 
-        document.querySelector("#seguir-sistema").addEventListener("click", () => {
-            localStorage.removeItem(CHAVE_TEMA);   // apaga a escolha do utilizador
-            aplicarTemaInicial();
-        });
+        aplicarTema(lerGuardado(CHAVE_TEMA, "claro"));
 
-        // =====================================================================
-        // 03 · Contador de visitas
-        // =====================================================================
-        function atualizarContador() {
-            const visitas = Number(localStorage.getItem(CHAVE_VISITAS)) + 1;
-            localStorage.setItem(CHAVE_VISITAS, visitas);
-            document.querySelector("#contador-visitas").textContent =
-                `É a ${visitas}.ª vez que nos visitas.`;
-        }
-
-        document.querySelector("#recomecar").addEventListener("click", () => {
-            localStorage.removeItem(CHAVE_VISITAS);
-            document.querySelector("#contador-visitas").textContent = "Contador reposto.";
-        });
-
-        // =====================================================================
-        // 05 · A ficha do leitor (objeto com nome, cartão e géneros)
-        // =====================================================================
-        const fichaForm = document.querySelector("#ficha-leitor");
-
-        function mostrarLeitor() {
-            const leitor = ler(CHAVE_LEITOR, null);
-            const saudacao = document.querySelector("#saudacao-leitor");
-            const listaGeneros = document.querySelector("#generos-leitor");
-            listaGeneros.replaceChildren();
-
-            if (!leitor) {
-                saudacao.textContent = "Ainda não há ficha guardada.";
-                return;
-            }
-
-            saudacao.textContent = `Olá, ${leitor.nome}! Cartão ${leitor.cartao}.`;
-            for (const genero of leitor.generos) {
-                const li = document.createElement("li");
-                li.textContent = genero;
-                listaGeneros.append(li);
-            }
-        }
-
-        fichaForm.addEventListener("submit", (evento) => {
-            evento.preventDefault();
-            const nome = fichaForm.nome.value.trim();
-            if (nome === "") {
-                document.querySelector("#saudacao-leitor").textContent = "O nome não pode ficar vazio.";
-                return;
-            }
-
-            guardar(CHAVE_LEITOR, {
-                nome: nome,
-                cartao: fichaForm.cartao.value.trim(),
-                generos: fichaForm.generos.value.split(",").map((g) => g.trim()).filter(Boolean),
-            });
-
-            fichaForm.reset();
-            mostrarLeitor();
-        });
-
-        document.querySelector("#esquecer-leitor").addEventListener("click", () => {
-            localStorage.removeItem(CHAVE_LEITOR);
-            mostrarLeitor();
-        });
-
-        // =====================================================================
-        // 08 · Lista de leitura que fica (o array é a fonte da verdade)
-        // =====================================================================
-        let leitura = ler(CHAVE_LEITURA, []);
-        const listaLeitura = document.querySelector("#lista-leitura");
-
-        function atualizarLeitura() {
-            guardar(CHAVE_LEITURA, leitura);
-            mostrarLeitura();
-        }
-
-        function mostrarLeitura() {
-            listaLeitura.replaceChildren();
-
-            if (leitura.length === 0) {
-                const vazio = document.createElement("li");
-                vazio.textContent = "A lista está vazia.";
-                listaLeitura.append(vazio);
-                return;
-            }
-
-            leitura.forEach((item, indice) => {
-                const li = document.createElement("li");
-                if (item.lido) li.classList.add("lido");
-
-                const titulo = document.createElement("span");
-                titulo.className = "titulo";
-                titulo.textContent = item.titulo;
-
-                const marcar = document.createElement("button");
-                marcar.type = "button";
-                marcar.textContent = item.lido ? "Não lido" : "Marcar lido";
-                marcar.addEventListener("click", () => {
-                    leitura[indice].lido = !leitura[indice].lido;
-                    atualizarLeitura();
-                });
-
-                const remover = document.createElement("button");
-                remover.type = "button";
-                remover.textContent = "Remover";
-                remover.addEventListener("click", () => {
-                    leitura.splice(indice, 1);
-                    atualizarLeitura();
-                });
-
-                li.append(titulo, marcar, remover);
-                listaLeitura.append(li);
-            });
-        }
-
-        document.querySelector("#form-leitura").addEventListener("submit", (evento) => {
-            evento.preventDefault();
-            const campo = evento.target.titulo;
-            const titulo = campo.value.trim();
-            if (titulo === "") return;
-
-            leitura.push({ titulo: titulo, lido: false });
-            campo.value = "";
-            atualizarLeitura();
-        });
-
-        // =====================================================================
-        // 11 · Últimas pesquisas (caixa com versão e data, 7 dias, máximo 5)
-        // =====================================================================
-        let temporizadorPesquisa;
-
-        function lerPesquisas() {
-            const caixa = ler(CHAVE_PESQUISAS, null);
-            if (!caixa || caixa.versao !== 1) return [];
-            if (Date.now() - caixa.guardadoEm > SETE_DIAS) return [];   // velhas: ignorar
-            return caixa.dados;
-        }
-
-        function registarPesquisa(termo) {
-            const limpo = termo.trim();
-            if (limpo.length < 2) return;
-
-            clearTimeout(temporizadorPesquisa);
-            temporizadorPesquisa = setTimeout(() => {
-                const antigas = lerPesquisas().filter((t) => t !== limpo);
-                const dados = [limpo, ...antigas].slice(0, 5);
-                guardar(CHAVE_PESQUISAS, { versao: 1, guardadoEm: Date.now(), dados: dados });
-                mostrarPesquisas();
-            }, 600);
-        }
-
-        function mostrarPesquisas() {
-            const caixa = document.querySelector("#ultimas-pesquisas");
-            caixa.replaceChildren();
-            const pesquisas = lerPesquisas();
-
-            if (pesquisas.length === 0) {
-                const vazio = document.createElement("span");
-                vazio.className = "vazio";
-                vazio.textContent = "Ainda não há pesquisas guardadas.";
-                caixa.append(vazio);
-                return;
-            }
-
-            for (const termo of pesquisas) {
-                const botao = document.createElement("button");
-                botao.type = "button";
-                botao.textContent = termo;
-                botao.addEventListener("click", () => {
-                    pesquisa.value = termo;
-                    mostrarLivros();
-                });
-                caixa.append(botao);
-            }
-        }
-
-        document.querySelector("#limpar-pesquisas").addEventListener("click", () => {
-            localStorage.removeItem(CHAVE_PESQUISAS);
-            mostrarPesquisas();
-        });
-
-        // =====================================================================
-        // 09 · Um aviso por visita (sessionStorage)
-        // =====================================================================
-        const faixa = document.querySelector("#faixa-aviso");
-
-        if (sessionStorage.getItem(CHAVE_AVISO) !== "sim") {
-            faixa.hidden = false;
-        }
-
-        document.querySelector("#fechar-aviso").addEventListener("click", () => {
-            faixa.hidden = true;
-            sessionStorage.setItem(CHAVE_AVISO, "sim");
-        });
-
-        // =====================================================================
-        // 10 · Dois separadores, uma lista (evento storage)
-        // =====================================================================
-        window.addEventListener("storage", (evento) => {
-            if (evento.key === CHAVE_LEITURA || evento.key === null) {
-                leitura = ler(CHAVE_LEITURA, []);
-                mostrarLeitura();
-            }
-            if (evento.key === CHAVE_TEMA || evento.key === null) {
-                aplicarTemaInicial();
-            }
-            if (evento.key === CHAVE_PESQUISAS) {
-                mostrarPesquisas();
-            }
-        });
-
-        // =====================================================================
-        // Arranque
-        // =====================================================================
+        // Carregar o catálogo do livros.json (fetch com try/catch)
         async function carregarLivros() {
             try {
                 const resposta = await fetch("livros.json");
                 if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+
                 catalogo = await resposta.json();
 
-                mostrarCatalogo();
+                mostrarCatalogo();                       // exercício 06 na consola
                 console.log(`Livros disponíveis: ${contarDisponiveis()}`);
                 const antigo = livroMaisAntigo();
                 if (antigo) console.log(`Livro mais antigo: «${antigo.titulo}» (${antigo.ano})`);
@@ -875,20 +457,17 @@ localStorage.length                    // 2     ("n" e "ativo")</pre>
                 mostrarLivros();
             } catch (erro) {
                 console.error("Não foi possível carregar livros.json:", erro);
-                resumo.textContent = "Catálogo indisponível";
-                lista.replaceChildren();
-                const aviso = document.createElement("li");
-                aviso.className = "erro";
-                aviso.textContent = "Não foi possível carregar o catálogo (livros.json).";
-                lista.append(aviso);
+                if (resumo) resumo.textContent = "Catálogo indisponível";
+                if (lista) {
+                    lista.replaceChildren();
+                    const aviso = document.createElement("li");
+                    aviso.className = "erro";
+                    aviso.textContent = "Não foi possível carregar o catálogo (livros.json).";
+                    lista.append(aviso);
+                }
             }
         }
 
-        aplicarTemaInicial();
-        atualizarContador();
-        mostrarLeitor();
-        mostrarLeitura();
-        mostrarPesquisas();
         carregarLivros();
     </script>
 
